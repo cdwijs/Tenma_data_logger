@@ -19,15 +19,15 @@ class RS232 : public QWidget
 {
     Q_OBJECT
 public:
-    RS232(QWidget *parent=0);
+    RS232(QWidget *parent=nullptr);
 public slots:
-    slotSettings(bool clicked);
-    slotConnect(bool clicked);
-    slotDisconnect(bool clicked);
-    slotMessage(QString string);
-    slotRx();
-    slotRxTimer();
-    slotTxTimer();
+    void slotSettings(bool clicked);
+    void slotConnect(bool clicked);
+    void slotDisconnect(bool clicked);
+    void slotMessage(QString string);
+    void slotRx();
+    void slotRxTimer();
+    void slotTxTimer();
 #ifdef FAKE_MESSAGES
     slotTimer();
 #endif
@@ -49,7 +49,7 @@ private:
     QPushButton *myConnectBtn;
     SettingsDialog::Settings *mySerSettings;
     QSerialPort *mySerialPort;
-    QQueue<unsigned char> *myRxQueue;
+    QQueue<char> *myRxQueue;
 };
 
 #endif // RS232_H

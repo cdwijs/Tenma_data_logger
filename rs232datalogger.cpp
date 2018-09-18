@@ -4,7 +4,7 @@
 const int MAX_LOG_BLOCKS=100000;
 
 
-RS232MONITOR::RS232MONITOR(QWidget *parent) : QWidget(parent)
+RS232DATALOGGER::RS232DATALOGGER(QWidget *parent) : QWidget(parent)
 {
    //qDebug()<<Q_FUNC_INFO;
 
@@ -35,18 +35,18 @@ RS232MONITOR::RS232MONITOR(QWidget *parent) : QWidget(parent)
     myLog->setMaximumBlockCount(MAX_LOG_BLOCKS); //one block per hard line break
     myLog->setReadOnly(true);
 
-    connect(rs232Rx,&RS232::sigReceived,this,&RS232MONITOR::slotParseRx);
-    connect(rs232Tx,&RS232::sigReceived,this,&RS232MONITOR::slotParseTx);
-    connect(myClearBtn,&QPushButton::clicked,this,slotClear);
-    connect(this,&RS232MONITOR::sigOpenRx,rs232Rx,&RS232::slotConnect);
-    connect(this,&RS232MONITOR::sigOpenTx,rs232Tx,&RS232::slotConnect);
-    connect(this,&RS232MONITOR::sigToFile,myFileWriter,&FileWriter::slotRx);
+    connect(rs232Rx,&RS232::sigReceived,this,&RS232DATALOGGER::slotParseRx);
+    connect(rs232Tx,&RS232::sigReceived,this,&RS232DATALOGGER::slotParseTx);
+    connect(myClearBtn,&QPushButton::clicked,this,&RS232DATALOGGER::slotClear);
+    connect(this,&RS232DATALOGGER::sigOpenRx,rs232Rx,&RS232::slotConnect);
+    connect(this,&RS232DATALOGGER::sigOpenTx,rs232Tx,&RS232::slotConnect);
+    connect(this,&RS232DATALOGGER::sigToFile,myFileWriter,&FileWriter::slotRx);
     emit sigOpenRx(false);
     emit sigOpenTx(false);
     //connect()
 }
 
-RS232MONITOR::slotParseRx(QString msg)
+void RS232DATALOGGER::slotParseRx(QString msg)
 {
     //qDebug()<<Q_FUNC_INFO;
     emit sigForwardRx(msg);
@@ -55,7 +55,7 @@ RS232MONITOR::slotParseRx(QString msg)
     emit sigToFile(msg);
 }
 
-RS232MONITOR::slotParseTx(QString msg)
+void RS232DATALOGGER::slotParseTx(QString msg)
 {
     //qDebug()<<Q_FUNC_INFO;
     emit sigForwardTx(msg);
@@ -64,7 +64,8 @@ RS232MONITOR::slotParseTx(QString msg)
     emit sigToFile(msg);
 }
 
-RS232MONITOR::slotClear(bool clicked)
+void RS232DATALOGGER::slotClear(bool clicked)
 {
+    Q_UNUSED(clicked);
     myLog->clear();
 }

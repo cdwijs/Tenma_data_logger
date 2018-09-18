@@ -9,24 +9,24 @@
 #include <QTimer>
 #include "filewriter.h"
 
-class RS232MONITOR : public QWidget
+class RS232DATALOGGER : public QWidget
 {
     Q_OBJECT
 public:
 
-    RS232MONITOR(QWidget *parent=0);
+    RS232DATALOGGER(QWidget *parent=nullptr);
 public slots:
-    slotParseRx(QString msg);
-    slotParseTx(QString msg);
-    slotClear(bool clicked);
+    void slotParseRx(QString msg);
+    void slotParseTx(QString msg);
+    void slotClear(bool clicked);
 
 
 signals:
-    sigForwardRx(QString msg);
-    sigForwardTx(QString msg);
-    sigOpenTx(bool clicked);
-    sigOpenRx(bool clicked);
-    sigToFile(QString msg);
+    void sigForwardRx(QString msg);
+    void sigForwardTx(QString msg);
+    void sigOpenTx(bool clicked);
+    void sigOpenRx(bool clicked);
+    void sigToFile(QString msg);
 private:
     RS232 *rs232Rx;
     RS232 *rs232Tx;

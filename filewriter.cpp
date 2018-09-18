@@ -16,7 +16,7 @@ FileWriter::FileWriter(QWidget *parent)
     myFileBtn->setIcon(QIcon("://images/disk_edit.png"));
     myFileBtn->setToolTip("File");
 
-    connect(myTimer,&QTimer::timeout,this,slotTimer);
+    connect(myTimer,&QTimer::timeout,this,&FileWriter::slotTimer);
     myHlayout->setOrientation(Qt::Horizontal);
     myHlayout->addWidget(myFileBtn);
     myHlayout->setParent(parent);
@@ -24,7 +24,7 @@ FileWriter::FileWriter(QWidget *parent)
     connect(myFileBtn,&QPushButton::clicked,this,&FileWriter::slotFile);
 }
 
-FileWriter::slotRx(QString msg)
+void FileWriter::slotRx(QString msg)
 {
     //store the msg in the file here
 
@@ -43,8 +43,9 @@ FileWriter::slotRx(QString msg)
     }
 }
 
-FileWriter::slotFile(bool clicked)
+void FileWriter::slotFile(bool clicked)
 {
+    Q_UNUSED(clicked);
     //close the file when clicked again
     if (myFile->isOpen())
     {
@@ -94,7 +95,7 @@ FileWriter::slotFile(bool clicked)
 }
 
 
-FileWriter::slotTimer()
+void FileWriter::slotTimer()
 {
     myFileBtn->setIcon(QIcon("://images/disk.png"));
 }

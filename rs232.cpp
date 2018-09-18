@@ -17,7 +17,7 @@ RS232::RS232(QWidget *parent)
     myTimer->start();
 #endif
     mySettingsDia = new SettingsDialog;
-    myRxQueue = new QQueue<unsigned char>;
+    myRxQueue = new QQueue<char>;
     myRxQueue->clear();
 
     mySerialPort = new QSerialPort ;
@@ -59,19 +59,21 @@ RS232::RS232(QWidget *parent)
     connect(mySettingsBtn,&QPushButton::clicked,this,&RS232::slotSettings);
     connect(myConnectBtn,&QPushButton::clicked,this,&RS232::slotConnect);
     connect(mySerialPort,&QSerialPort::readyRead,this,&RS232::slotRx);
-    connect(myRxTimer,&QTimer::timeout,this,slotRxTimer);
-    connect(myTxTimer,&QTimer::timeout,this,slotTxTimer);
+    connect(myRxTimer,&QTimer::timeout,this,&RS232::slotRxTimer);
+    connect(myTxTimer,&QTimer::timeout,this,&RS232::slotTxTimer);
     myHlayout->setParent(parent);
     myHlayout->show();
 }
 
-RS232::slotSettings(bool clicked)
+void RS232::slotSettings(bool clicked)
 {
+    Q_UNUSED(clicked);
     mySettingsDia->show();
 }
 
-RS232::slotConnect(bool clicked)
+void RS232::slotConnect(bool clicked)
 {
+    Q_UNUSED(clicked);
     const SettingsDialog::Settings p = mySettingsDia->settings();
     if(mySerialPort->isOpen())
     {
@@ -103,8 +105,9 @@ RS232::slotConnect(bool clicked)
     }
 }
 
-RS232::slotDisconnect(bool clicked)
+void RS232::slotDisconnect(bool clicked)
 {
+    Q_UNUSED(clicked);
     const SettingsDialog::Settings p = mySettingsDia->settings();
     if(mySerialPort->isOpen())
     {
@@ -120,7 +123,7 @@ RS232::slotDisconnect(bool clicked)
     }
 }
 
-RS232::slotMessage(QString string)
+void RS232::slotMessage(QString string)
 {
     //qDebug()<<string;
     QByteArray mydata;
@@ -138,18 +141,17 @@ RS232::slotMessage(QString string)
     }
 }
 
-RS232::slotRx()
+void RS232::slotRx()
 {
     const SettingsDialog::Settings p = mySettingsDia->settings();
     //qDebug()<<"slotRx";
     int numstrings=0;
-    bool endofstringseen=false;
     myRxLED->setState(true);
     myRxTimer->start(TIME_LED);
     const QByteArray data = mySerialPort->readAll();
     for (int i = 0; i < data.size(); ++i)
     {
-        unsigned char rxchar;
+        char rxchar;
         rxchar = data.at(i);
         QString str(rxchar);
         if (p.terminators.contains(str))
@@ -167,7 +169,7 @@ RS232::slotRx()
         int len = myRxQueue->length();
         for (int j = 0; j < (len); ++j)
         {
-            unsigned char rxchar;
+            char rxchar;
             rxchar = myRxQueue->dequeue();
             rxstring.append(rxchar);
 
@@ -186,12 +188,12 @@ RS232::slotRx()
     }
 }
 
-RS232::slotRxTimer()
+void RS232::slotRxTimer()
 {
     myRxLED->setState(false);
 }
 
-RS232::slotTxTimer()
+void RS232::slotTxTimer()
 {
     myTxLED->setState(false);
 }

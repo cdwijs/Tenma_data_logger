@@ -13,11 +13,11 @@
 class FileWriter : public QWidget
 {
 public:
-    FileWriter(QWidget *parent=0);
+    FileWriter(QWidget *parent=nullptr);
 public slots:
-    slotRx(QString msg);
-    slotFile(bool clicked);
-    slotTimer();
+    void slotRx(QString msg);
+    void slotFile(bool clicked);
+    void slotTimer();
 signals:
 private:
     QPushButton *myFileBtn;

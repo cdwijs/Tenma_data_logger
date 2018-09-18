@@ -6,7 +6,7 @@
 class LedIndicator: public QWidget {
     Q_OBJECT
   public:
-    LedIndicator(QWidget *parent = 0);
+    LedIndicator(QWidget *parent = nullptr);
     void setState(bool state);
     void toggle();
     void setOnColor(QColor onColor);
