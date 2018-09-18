@@ -43,7 +43,9 @@ FORMS += \
 
 
 #git version: https://bitbucket.org/mkarlsso/trodes/src/72c877d43e383ba7daf6e50a634b7cca61f79abd/Modules/SimpleCommunicator/SimpleCommunicator.pro?at=master&fileviewer=file-view-default
-GIT_COMMAND = git  describe --always --all --tags --dirty --long --abbrev=40
+#GIT_COMMAND = git  describe --always --all --tags --dirty --long --abbrev=40
+#GIT_COMMAND = git  describe --always --dirty --long --abbrev=40
+GIT_COMMAND = git  describe --always --dirty --long --abbrev=40
 
 #must not contain spaces
 GIT_COMMIT = $$system($$GIT_COMMAND)
@@ -59,7 +61,6 @@ Release: qmakeforce.commands = $$QMAKE_DEL_FILE release\main.o debug\main.o Make
 Release: qmakeforce.depends = FORCE
 Release: PRE_TARGETDEPS += $$qmakeforce.target
 Release: QMAKE_EXTRA_TARGETS += qmakeforce
-
 
 #show the value of all defines: https://forum.qt.io/topic/82531/defines-in-qt-creator/9
 message($$DEFINES)
