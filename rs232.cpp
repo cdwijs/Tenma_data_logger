@@ -171,6 +171,7 @@ void RS232::slotRx()
         {
             char rxchar;
             rxchar = myRxQueue->dequeue();
+
             rxstring.append(rxchar);
 
             QString str(rxchar);

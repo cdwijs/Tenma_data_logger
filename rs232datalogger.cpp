@@ -50,8 +50,74 @@ void RS232DATALOGGER::slotParseRx(QString msg)
 {
     //qDebug()<<Q_FUNC_INFO;
     emit sigForwardRx(msg);
-    msg.prepend("Rx: ");
-    myLog->appendPlainText(msg);
+    //msg.prepend("Rx: ");
+
+    //magle text so it becomes readable
+    //protocol description: https://sigrok.org/wiki/UNI-T_UT71x_series#Protocol
+    //http://www.produktinfo.conrad.com/datenblaetter/100000-124999/121791-da-01-en-Schnittst_Protokoll_VC960_DMM.pdf
+    const int IDX_RANGE=5;
+    const int IDX_FUNCTION=6;
+    const int IDX_STATE_ACDC=7;
+    const int IDX_STATE_AUTO=8;
+    const char FUNC_VOLTAGE='1';
+    const char FUNC_CURRENT='9';
+
+    if (msg.at(0)==0xff8a)
+    {
+        msg.remove(0,1);
+    }
+
+
+    QString result;
+    QChar range = msg.at(IDX_RANGE);
+    QChar function = msg.at(IDX_FUNCTION);
+    QChar state_acdc = msg.at(IDX_STATE_ACDC);
+    QChar state_auto = msg.at(IDX_STATE_AUTO);
+
+    QChar digit1 = msg.at(0);
+    QChar digit2 = msg.at(1);
+    QChar digit3 = msg.at(2);
+    QChar digit4 = msg.at(3);
+    QChar digit5 = msg.at(4);
+
+    ushort digit;
+
+    digit= digit1.unicode();
+    digit &=0x007F;
+    digit1 = digit;
+
+    digit= digit2.unicode();
+    digit &=0x007F;
+    digit2 = digit;
+
+    digit= digit3.unicode();
+    digit &=0x007F;
+    digit3 = digit;
+
+    digit= digit4.unicode();
+    digit &=0x007F;
+    digit4 = digit;
+
+    digit= digit5.unicode();
+    digit &=0x007F;
+    digit5 = digit;
+
+    result=digit1;
+    result.append(digit2);
+    result.append('.');
+    result.append(digit3);
+    result.append(digit4);
+    result.append(digit5);
+    if (function==FUNC_VOLTAGE)
+    {
+        result.append('V');
+    }
+    if (function==FUNC_CURRENT)
+    {
+        result.append('A');
+    }
+    //myLog->appendPlainText(msg);
+    myLog->appendPlainText(result);
     emit sigToFile(msg);
 }
 
