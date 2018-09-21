@@ -3,12 +3,12 @@
 #include <QTimer>
 #include <QtWidgets>
 #include <QWidget>
-#include "rs232.h"
 #include <QObject>
 #include <QPlainTextEdit>
 #include <QTimer>
 #include "filewriter.h"
 #include "tenma.h"
+#include "timebase.h"
 
 class RS232DATALOGGER : public QWidget
 {
@@ -18,8 +18,8 @@ public:
     RS232DATALOGGER(QWidget *parent=nullptr);
 public slots:
     void slotParseRx(QString msg);
-    void slotParseTx(QString msg);
     void slotClear(bool clicked);
+    void slotSecond(void);
 
 signals:
     void sigForwardRx(QString msg);
@@ -31,8 +31,8 @@ private:
     TENMA *myTenma1;
     TENMA *myTenma2;
 
-    RS232 *rs232Rx;
-    RS232 *rs232Tx;
+    TIMEBASE *myTimebase;
+
     QPlainTextEdit *myLog;
     QSplitter *myHlayout;
     QSplitter *myVlayout;

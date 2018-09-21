@@ -25,9 +25,9 @@ public slots:
     void slotConnect(bool clicked);
     void slotDisconnect(bool clicked);
     void slotMessage(QString string);
-    void slotRx();
-    void slotRxTimer();
-    void slotTxTimer();
+    void slotRx(void);
+    void slotRxTimer(void);
+    void slotTxTimer(void);
 #ifdef FAKE_MESSAGES
     slotTimer();
 #endif
@@ -43,7 +43,7 @@ private:
     LedIndicator *myRxLED;
     LedIndicator *myTxLED;
     SettingsDialog *mySettingsDia;
-    QSplitter *myHlayout;
+    QHBoxLayout *myHlayout;
     QLabel *myLabel;
     QPushButton *mySettingsBtn;
     QPushButton *myConnectBtn;

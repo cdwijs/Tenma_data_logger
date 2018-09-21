@@ -7,7 +7,7 @@ const unsigned char RS232_TERMINATION_CHAR=0x3B;
 const unsigned char RS232_CR=0x0D;
 
 
-RS232::RS232(QWidget *parent)
+RS232::RS232(QWidget *parent) : QWidget(parent)
 {
     //qDebug()<<Q_FUNC_INFO;
 #ifdef FAKE_MESSAGES
@@ -47,9 +47,7 @@ RS232::RS232(QWidget *parent)
     myTxLED->setOnColor(Qt::green);
     myTxLED->setToolTip("Tx");
 
-    myHlayout = new QSplitter();
-    myHlayout->setChildrenCollapsible(false);
-    myHlayout->setOrientation(Qt::Horizontal);
+    myHlayout = new QHBoxLayout();
     myHlayout->addWidget(myLabel);
     myHlayout->addWidget(myTxLED);
     myHlayout->addWidget(myRxLED);
@@ -61,8 +59,7 @@ RS232::RS232(QWidget *parent)
     connect(mySerialPort,&QSerialPort::readyRead,this,&RS232::slotRx);
     connect(myRxTimer,&QTimer::timeout,this,&RS232::slotRxTimer);
     connect(myTxTimer,&QTimer::timeout,this,&RS232::slotTxTimer);
-    myHlayout->setParent(parent);
-    myHlayout->show();
+    setLayout(myHlayout);
 }
 
 void RS232::slotSettings(bool clicked)
@@ -89,19 +86,25 @@ void RS232::slotConnect(bool clicked)
     {
         emit sigOpenChanged(true);
     }
-    else
-    {
-        QMessageBox::critical(this, tr("Error"), mySerialPort->errorString());
-        //qDebug(tr("Open error"));
-    }
 
-    if(mySerialPort->isOpen())
+    if (mySerialPort->error() != QSerialPort::NoError)
     {
-        myLabel->setText(p.name);
+        QString string;
+        string = mySerialPort->errorString();
+        string.prepend(p.name);
+        string.prepend("Serial Port Error: ");
+        myLabel->setText(string);
     }
     else
     {
-        myLabel->setText("COM-");
+        if(mySerialPort->isOpen())
+        {
+            myLabel->setText(p.name);
+        }
+        else
+        {
+            myLabel->setText("COM-");
+        }
     }
 }
 
@@ -141,7 +144,7 @@ void RS232::slotMessage(QString string)
     }
 }
 
-void RS232::slotRx()
+void RS232::slotRx(void)
 {
     const SettingsDialog::Settings p = mySettingsDia->settings();
     //qDebug()<<"slotRx";
@@ -164,14 +167,11 @@ void RS232::slotRx()
     {
         QString rxstring;
         rxstring.clear();
-        QByteArray queuedata;
-        queuedata.clear();
         int len = myRxQueue->length();
         for (int j = 0; j < (len); ++j)
         {
             char rxchar;
             rxchar = myRxQueue->dequeue();
-
             rxstring.append(rxchar);
 
             QString str(rxchar);
@@ -189,12 +189,12 @@ void RS232::slotRx()
     }
 }
 
-void RS232::slotRxTimer()
+void RS232::slotRxTimer(void)
 {
     myRxLED->setState(false);
 }
 
-void RS232::slotTxTimer()
+void RS232::slotTxTimer(void)
 {
     myTxLED->setState(false);
 }
