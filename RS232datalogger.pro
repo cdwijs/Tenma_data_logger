@@ -30,6 +30,7 @@ SOURCES += \
     ledindicator.cpp \
     rs232datalogger.cpp \
     filewriter.cpp \
+    tenma.cpp
 
 HEADERS += \
     rs232.h \
@@ -37,6 +38,7 @@ HEADERS += \
     ledindicator.h \
     rs232datalogger.h \
     filewriter.h \
+    tenma.h
 
 FORMS += \
     settingsdialog.ui

@@ -8,6 +8,7 @@
 #include <QPlainTextEdit>
 #include <QTimer>
 #include "filewriter.h"
+#include "tenma.h"
 
 class RS232DATALOGGER : public QWidget
 {
@@ -20,7 +21,6 @@ public slots:
     void slotParseTx(QString msg);
     void slotClear(bool clicked);
 
-
 signals:
     void sigForwardRx(QString msg);
     void sigForwardTx(QString msg);
@@ -28,6 +28,9 @@ signals:
     void sigOpenRx(bool clicked);
     void sigToFile(QString msg);
 private:
+    TENMA *myTenma1;
+    TENMA *myTenma2;
+
     RS232 *rs232Rx;
     RS232 *rs232Tx;
     QPlainTextEdit *myLog;

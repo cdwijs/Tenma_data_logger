@@ -1,64 +1,26 @@
-#include "rs232datalogger.h"
-#include <QDebug>
+#include "tenma.h"
 
-const int MAX_LOG_BLOCKS=100000;
-
-
-RS232DATALOGGER::RS232DATALOGGER(QWidget *parent) : QWidget(parent)
+TENMA::TENMA(QWidget *parent) : QWidget(parent)
 {
-   //qDebug()<<Q_FUNC_INFO;
+    rs232 = new RS232(this);
+    valueline = new QLineEdit();
 
-    myTenma1 = new TENMA(this);
-    myTenma2 = new TENMA(this);
+    centralWidget = new QWidget();
+    completeLayout = new QVBoxLayout;
 
-    myRxLabel = new QLabel("Rx");
-    myTxLabel = new QLabel("Tx");
-    myClearBtn = new QPushButton();
-    myClearBtn->setIcon(QIcon(":/images/delete.png"));
-    myClearBtn->setToolTip("Clear");
-    myLog = new QPlainTextEdit();
-    myHlayout = new QSplitter();
-    myHlayout->setChildrenCollapsible(false);
-    myHlayout->setOrientation(Qt::Horizontal);
-    myHlayout->addWidget(myRxLabel);
-    rs232Rx = new RS232(myHlayout);
-    myHlayout->addWidget(rs232Rx);
-    myHlayout->addWidget(myTxLabel);
-    rs232Tx = new RS232(myHlayout);
-    myHlayout->addWidget(rs232Tx);
-    myVlayout = new QSplitter();
-    myVlayout->setChildrenCollapsible(false);
-    myVlayout->setOrientation(Qt::Vertical);
-    myHlayout->addWidget(myClearBtn);
-    myFileWriter = new FileWriter(myHlayout);
+    completeLayout->addWidget(valueline);
+    completeLayout->addWidget(rs232);
 
-    myVlayout->addWidget(myTenma1);
-    myVlayout->addWidget(myTenma2);
+    setLayout(completeLayout);
 
-    myVlayout->addWidget(myLog);
-    myVlayout->addWidget(myHlayout);
-    myVlayout->show();
+    valueline->setEnabled(false);
 
-    myLog->setMaximumBlockCount(MAX_LOG_BLOCKS); //one block per hard line break
-    myLog->setReadOnly(true);
-
-    connect(rs232Rx,&RS232::sigReceived,this,&RS232DATALOGGER::slotParseRx);
-    connect(rs232Tx,&RS232::sigReceived,this,&RS232DATALOGGER::slotParseTx);
-    connect(myClearBtn,&QPushButton::clicked,this,&RS232DATALOGGER::slotClear);
-    connect(this,&RS232DATALOGGER::sigOpenRx,rs232Rx,&RS232::slotConnect);
-    connect(this,&RS232DATALOGGER::sigOpenTx,rs232Tx,&RS232::slotConnect);
-    connect(this,&RS232DATALOGGER::sigToFile,myFileWriter,&FileWriter::slotRx);
-    emit sigOpenRx(false);
-    emit sigOpenTx(false);
-    //connect()
+    connect(rs232,&RS232::sigReceived,this,&TENMA::slotRx);
 }
 
-void RS232DATALOGGER::slotParseRx(QString msg)
+void TENMA::slotRx(QString msg)
 {
     //qDebug()<<Q_FUNC_INFO;
-    emit sigForwardRx(msg);
-    //msg.prepend("Rx: ");
-
     //magle text so it becomes readable
     //protocol description: https://sigrok.org/wiki/UNI-T_UT71x_series#Protocol
     //http://www.produktinfo.conrad.com/datenblaetter/100000-124999/121791-da-01-en-Schnittst_Protokoll_VC960_DMM.pdf
@@ -167,22 +129,6 @@ void RS232DATALOGGER::slotParseRx(QString msg)
     {
         result.append('A');
     }
-    //myLog->appendPlainText(msg);
-    myLog->appendPlainText(result);
-    emit sigToFile(result);
-}
-
-void RS232DATALOGGER::slotParseTx(QString msg)
-{
-    //qDebug()<<Q_FUNC_INFO;
-    emit sigForwardTx(msg);
-    msg.prepend("Tx: ");
-    myLog->appendPlainText(msg);
-    emit sigToFile(msg);
-}
-
-void RS232DATALOGGER::slotClear(bool clicked)
-{
-    Q_UNUSED(clicked);
-    myLog->clear();
+    valueline->setText(result);
+    emit sigValue(result);
 }
