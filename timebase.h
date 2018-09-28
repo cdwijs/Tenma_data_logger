@@ -22,7 +22,7 @@ private:
     QTimer *myTimer;
     QDateTime *myQDateTime;
     int myInterval;
-    qint64 myLastNow;
+    //qint64 myLastNow;
 };
 
 #endif // TIMEBASE_H

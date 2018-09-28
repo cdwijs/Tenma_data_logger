@@ -61,5 +61,5 @@ void RS232DATALOGGER::slotClear(bool clicked)
 
 void RS232DATALOGGER::slotSecond()
 {
-
+    //
 }

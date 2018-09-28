@@ -27,7 +27,7 @@ void TIMEBASE::slotSecond()
     //end compensate
     emit sig1Hz();
 
-    qDebug()<<now << "\t" <<(now-myLastNow);
+    //qDebug()<<now << "\t" <<(now-myLastNow);
 
-    myLastNow = now;
+    //myLastNow = now;
 }
