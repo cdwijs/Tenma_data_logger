@@ -36,6 +36,14 @@ void TENMA::slotRx(QString msg)
     const char STATE_DC='2';
     const char STATE_ACDC='3';
 
+    const char RANGE_0='0';
+    const char RANGE_1='1';
+    const char RANGE_2='2';
+    const char RANGE_3='3';
+    const char RANGE_4='4';
+
+
+
     if (msg.at(0)==0xff8a)
     {
         msg.remove(0,1);
@@ -64,6 +72,36 @@ void TENMA::slotRx(QString msg)
     msgchar= state_auto.unicode();
     msgchar &=0x007F;
     state_auto = msgchar;
+
+    int wholedigits=1; //0.0000 is 1 wholedigits
+
+    if (function==FUNC_VOLTAGE)
+    {
+        if (range==RANGE_1)
+        {
+            wholedigits = 1;
+        }
+        if (range==RANGE_2)
+        {
+             wholedigits = 2;
+        }
+        if (range==RANGE_3)
+        {
+            wholedigits = 3;
+        }
+        if (range==RANGE_4)
+        {
+            wholedigits = 4;
+        }
+    }
+
+    if (function==FUNC_CURRENT)
+    {
+        if (range==RANGE_1) //the multimeter only use this range
+        {
+            wholedigits = 2;
+        }
+    }
 
 
     if (state_acdc==STATE_OFF)
@@ -112,12 +150,33 @@ void TENMA::slotRx(QString msg)
     digit &=0x007F;
     digit5 = digit;
 
+    if (wholedigits == 0)
+    {
+        result.append('.');
+    }
     result.append(digit1);
+    if (wholedigits == 1)
+    {
+        result.append('.');
+    }
     result.append(digit2);
-    result.append('.');
+    if (wholedigits == 2)
+    {
+        result.append('.');
+    }
     result.append(digit3);
+    if (wholedigits == 3)
+    {
+        result.append('.');
+    }
     result.append(digit4);
+    if (wholedigits == 4)
+    {
+        result.append('.');
+    }
     result.append(digit5);
+
+    qDebug()<<"range:"<<range;
 
     result.append('\t');
 
