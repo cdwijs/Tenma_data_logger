@@ -32,3 +32,5 @@
 *.app
 /RS232Monitor.pro.user
 /RS232datalogger.pro.user
+.qtcreator/RS232datalogger.pro.user
+build/

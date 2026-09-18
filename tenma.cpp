@@ -44,7 +44,7 @@ void TENMA::slotRx(QString msg)
 
 
 
-    if (msg.at(0)==0xff8a)
+    if (msg.at(0)==QChar(0xff8a))
     {
         msg.remove(0,1);
     }

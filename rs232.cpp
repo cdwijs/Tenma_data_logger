@@ -129,9 +129,10 @@ void RS232::slotDisconnect(bool clicked)
 void RS232::slotMessage(QString string)
 {
     //qDebug()<<string;
-    QByteArray mydata;
-    mydata.resize(0);
-    mydata.append(string);
+    QByteArray mydata = string.toUtf8();
+    //QByteArray mydata;
+    //mydata.resize(0);
+    //mydata.append(string);
     if(mySerialPort->isOpen())
     {
         mySerialPort->write(mydata);

@@ -206,7 +206,8 @@ void SettingsDialog::updateSettings()
 void SettingsDialog::readSettings()
 {
     QString string;
-    string.sprintf("RS232 %d",myIndex);
+    //string.sprintf("RS232 %d",myIndex);
+    string = QString::asprintf("RS232 %d",myIndex);
     QSettings * settings = new QSettings;
     settings->setDefaultFormat(QSettings::IniFormat);
     //qDebug()<<"Reading settings from:"<< settings->fileName();
@@ -227,7 +228,8 @@ void SettingsDialog::writeSettings()
 {
     qDebug()<<Q_FUNC_INFO;
     QString string;
-    string.sprintf("RS232 %d",myIndex);
+    //string.sprintf("RS232 %d",myIndex); //doesn't work in newer Qt versions
+    string = QString::asprintf("RS232 %d",myIndex);
     qDebug()<<string;
     QSettings * settings = new QSettings;
     settings->setDefaultFormat(QSettings::IniFormat);
